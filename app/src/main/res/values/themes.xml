@@ -4,4 +4,7 @@
     <style name="Theme.ToDoCompose" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@color/purple_700</item>
     </style>
+    <style name="Theme.ToDoCompose.Dark" parent="android:ThemeOverlay.Material.Dark.ActionBar">
+        <item name="android:statusBarColor">@color/black</item>
+    </style>
 </resources>
