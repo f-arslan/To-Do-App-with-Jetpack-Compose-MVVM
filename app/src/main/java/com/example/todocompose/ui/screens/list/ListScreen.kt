@@ -1,12 +1,12 @@
 package com.example.todocompose.ui.screens.list
 
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
+import android.util.Log
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -16,11 +16,29 @@ import com.example.todocompose.ui.theme.fabAppBarBackgroundColor
 import com.example.todocompose.ui.viewmodels.SharedViewModel
 import com.example.todocompose.util.SearchAppBarState
 
+@ExperimentalMaterialApi
 @Composable
 fun ListScreen(
     navigateToTaskScreen: (taskId: Int) -> Unit,
     sharedViewModel: SharedViewModel
 ) {
+
+    LaunchedEffect(key1 = true) {
+        // Log.d("ListScreen", "LaunchedEffect Triggered")
+        // todo: read docs about LaunchedEffect
+        sharedViewModel.getAllTasks()
+    }
+
+    // todo: Collects values from state flow update if there is change
+    // todo: if we use by state, it returns the list
+    // todo: that's mean we don't need to use .value function
+    val allTasks by sharedViewModel.allTasks.collectAsState()
+
+    // for (task in allTasks.value) {
+        // todo: if we don't have any task, this place not gonna trigger.
+        // todo: after we added item to database, that will automatically triggered
+        // Log.d("ListScreen", "Task: ${task.title}")
+    // }
 
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
     val searchTextState: String by sharedViewModel.searchTextState
@@ -34,7 +52,10 @@ fun ListScreen(
             )
         },
         content = {
-                  ListContent()
+                  ListContent(
+                      tasks = allTasks,
+                      navigateToTaskScreen = navigateToTaskScreen,
+                  )
         },
         floatingActionButton = {
             ListFab(onFabClicked = navigateToTaskScreen)
