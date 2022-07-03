@@ -33,7 +33,9 @@ fun ListScreen(
                 searchTextState = searchTextState
             )
         },
-        content = {},
+        content = {
+                  ListContent()
+        },
         floatingActionButton = {
             ListFab(onFabClicked = navigateToTaskScreen)
         }
@@ -47,6 +49,7 @@ fun ListFab(
 ) {
     FloatingActionButton(
         onClick = {
+            // -1 means we are not opening a task, but adding a new one
             onFabClicked(-1)
         },
         backgroundColor = MaterialTheme.colors.fabAppBarBackgroundColor
