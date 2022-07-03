@@ -18,21 +18,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.todocompose.data.models.Priority
 import com.example.todocompose.data.models.ToDoTask
 import com.example.todocompose.ui.theme.*
+import com.example.todocompose.util.RequestState
 
 @ExperimentalMaterialApi
 @Composable
 fun ListContent(
-    tasks: List<ToDoTask>,
+    tasks: RequestState<List<ToDoTask>>,
     navigateToTaskScreen: (taskId: Int) -> Unit
 ) {
 
-    if (tasks.isEmpty()) {
-        // todo: It will enter there first, because we are busy with loading data. (in ListScreen.kt)i
-        EmptyContent()
-    } else {
-        DisplayTasks(
-            tasks = tasks, navigateToTaskScreen = navigateToTaskScreen
-        )
+    if (tasks is RequestState.Success) {
+        if (tasks.data.isEmpty()) {
+            // todo: It will enter there first, because we are busy with loading data. (in ListScreen.kt)
+            //  also, this is because in our viewModel, default param is empty list.
+            EmptyContent()
+        } else {
+            DisplayTasks(
+                tasks = tasks.data, navigateToTaskScreen = navigateToTaskScreen
+            )
+        }
     }
 
 }
