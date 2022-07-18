@@ -1,5 +1,6 @@
 package com.example.todocompose.navigation.destinations
 
+import android.util.Log
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -34,7 +35,9 @@ fun NavGraphBuilder.taskComposable(
         // that mean if not null, you are changing one of the current ones.
         // otherwise it will be shown empty.
         LaunchedEffect(key1 = selectedTask) {
-            sharedViewModel.updateTaskField(selectedTask = selectedTask)
+            if (selectedTask != null || taskId == -1)
+                // If the delete happen, this code not gonna be work.
+                sharedViewModel.updateTaskField(selectedTask = selectedTask)
         }
         
         TaskScreen(
