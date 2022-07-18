@@ -27,6 +27,8 @@ fun ListScreen(
         sharedViewModel.getAllTasks()
     }
 
+    val action by sharedViewModel.action
+
     // todo: Collects values from state flow update if there is change
     // todo: if we use by state, it returns the list
     // todo: that's mean we don't need to use .value function
@@ -40,6 +42,8 @@ fun ListScreen(
 
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
     val searchTextState: String by sharedViewModel.searchTextState
+
+    sharedViewModel.handleDatabaseAction(action = action)
 
     Scaffold(
         topBar = {
