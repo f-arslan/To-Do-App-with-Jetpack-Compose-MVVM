@@ -10,4 +10,6 @@ object Constants {
     const val LIST_SCREEN = "list/{action}"
     const val TASK_SCREEN = "task/{taskId}"
 
+    const val MAX_TITLE_LENGTH = 25
+
 }
