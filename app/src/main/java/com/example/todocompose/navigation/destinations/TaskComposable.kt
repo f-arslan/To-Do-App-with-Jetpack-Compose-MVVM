@@ -1,5 +1,6 @@
 package com.example.todocompose.navigation.destinations
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
@@ -29,8 +30,16 @@ fun NavGraphBuilder.taskComposable(
         sharedViewModel.getSelectedTask(taskId = taskId)
         val selectedTask by sharedViewModel.selectedTask.collectAsState()
 
+        // If the taskId changes the launch effect will be triggered.
+        // that mean if not null, you are changing one of the current ones.
+        // otherwise it will be shown empty.
+        LaunchedEffect(key1 = selectedTask) {
+            sharedViewModel.updateTaskField(selectedTask = selectedTask)
+        }
+        
         TaskScreen(
             selectedTask = selectedTask,
+            sharedViewModel = sharedViewModel,
             navigateToListScreen = navigateToListScreen
         )
 
