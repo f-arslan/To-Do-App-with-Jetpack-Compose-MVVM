@@ -27,16 +27,17 @@ fun NavGraphBuilder.taskComposable(
         //  else it returns the taskId from the list item
         //  Using only basic id better than passing whole task object
         val taskId = navBackStackEntry.arguments!!.getInt(TASK_ARGUMENT_KEY)
-        sharedViewModel.getSelectedTask(taskId = taskId)
         val selectedTask by sharedViewModel.selectedTask.collectAsState()
-
+        LaunchedEffect(key1 = taskId) {
+            sharedViewModel.getSelectedTask(taskId = taskId)
+        }
         // If the taskId changes the launch effect will be triggered.
         // that mean if not null, you are changing one of the current ones.
         // otherwise it will be shown empty.
         LaunchedEffect(key1 = selectedTask) {
             if (selectedTask != null || taskId == -1)
                 // If the delete happen, this code not gonna be work.
-                sharedViewModel.updateTaskField(selectedTask = selectedTask)
+                sharedViewModel.updateTaskFields(selectedTask = selectedTask)
         }
         
         TaskScreen(

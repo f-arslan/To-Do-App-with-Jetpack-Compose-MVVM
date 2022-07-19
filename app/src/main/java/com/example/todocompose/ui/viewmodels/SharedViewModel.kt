@@ -1,7 +1,6 @@
 package com.example.todocompose.ui.viewmodels
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -184,7 +183,7 @@ class SharedViewModel @Inject constructor(
         this.action.value = Action.NO_ACTION
     }
 
-    fun updateTaskField(selectedTask: ToDoTask?) {
+    fun updateTaskFields(selectedTask: ToDoTask?) {
         if (selectedTask != null) {
             id.value = selectedTask.id
             title.value = selectedTask.title
