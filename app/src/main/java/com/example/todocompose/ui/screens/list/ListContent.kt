@@ -19,26 +19,46 @@ import com.example.todocompose.data.models.Priority
 import com.example.todocompose.data.models.ToDoTask
 import com.example.todocompose.ui.theme.*
 import com.example.todocompose.util.RequestState
+import com.example.todocompose.util.SearchAppBarState
 
 @ExperimentalMaterialApi
 @Composable
 fun ListContent(
-    tasks: RequestState<List<ToDoTask>>,
+    allTasks: RequestState<List<ToDoTask>>,
+    searchedTasks: RequestState<List<ToDoTask>>,
+    searchAppBarState: SearchAppBarState,
     navigateToTaskScreen: (taskId: Int) -> Unit
 ) {
 
-    if (tasks is RequestState.Success) {
-        if (tasks.data.isEmpty()) {
-            // todo: It will enter there first, because we are busy with loading data. (in ListScreen.kt)
-            //  also, this is because in our viewModel, default param is empty list.
-            EmptyContent()
-        } else {
-            DisplayTasks(
-                tasks = tasks.data, navigateToTaskScreen = navigateToTaskScreen
+    if (searchAppBarState == SearchAppBarState.TRIGGERED) {
+        if (searchedTasks is RequestState.Success) {
+            HandleListContent(
+                tasks = searchedTasks.data,
+                navigateToTaskScreen = navigateToTaskScreen
             )
+        }
+    } else {
+        if (allTasks is RequestState.Success) {
+            HandleListContent(tasks = allTasks.data, navigateToTaskScreen = navigateToTaskScreen)
         }
     }
 
+}
+
+@ExperimentalMaterialApi
+@Composable
+fun HandleListContent(
+    tasks: List<ToDoTask>,
+    navigateToTaskScreen: (taskId: Int) -> Unit
+) {
+    if (tasks.isEmpty()) {
+        EmptyContent()
+    } else {
+        DisplayTasks(
+            tasks = tasks,
+            navigateToTaskScreen = navigateToTaskScreen
+        )
+    }
 }
 
 @ExperimentalMaterialApi

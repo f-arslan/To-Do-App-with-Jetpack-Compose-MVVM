@@ -35,10 +35,32 @@ class SharedViewModel @Inject constructor(
 
     val searchTextState: MutableState<String> = mutableStateOf("")
 
+    private val _searchedTasks =
+        MutableStateFlow<RequestState<List<ToDoTask>>>(RequestState.Idle)
+    val searchedTasks: StateFlow<RequestState<List<ToDoTask>>> = _searchedTasks
+
     private val _allTasks =
         MutableStateFlow<RequestState<List<ToDoTask>>>(RequestState.Idle)
-
     val allTasks: StateFlow<RequestState<List<ToDoTask>>> = _allTasks
+
+    fun searchDatabase(searchQuery: String) {
+        _searchedTasks.value = RequestState.Loading
+        try {
+            viewModelScope.launch {
+                repository.searchDatabase(searchQuery = "%$searchQuery%")
+                        // We collecting in searchedTask List the query result
+                    .collect { searchedTask ->
+                        _searchedTasks.value = RequestState.Success(searchedTask)
+                    }
+            }
+
+        } catch (e: Exception) {
+            _searchedTasks.value = RequestState.Error(e)
+        }
+        // todo: This is for search button on keyboard, it is observing.
+        searchAppBarState.value = SearchAppBarState.TRIGGERED
+    }
+
 
     suspend fun getAllTasks() {
         // todo: With the help of sealed class, we collect the if the state is success in line (38)
@@ -74,6 +96,8 @@ class SharedViewModel @Inject constructor(
             )
             repository.addTask(toDoTask)
         }
+        // while searching, if you want to add something, after adding you will go to main menu.
+        searchAppBarState.value = SearchAppBarState.CLOSED
     }
 
     private fun updateTask() {
@@ -100,12 +124,18 @@ class SharedViewModel @Inject constructor(
         }
     }
 
+    private fun deleteAllTask() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAllTasks()
+        }
+    }
+
     fun handleDatabaseAction(action: Action) {
         when (action) {
             Action.ADD -> addTask()
             Action.UPDATE -> updateTask()
             Action.DELETE -> deleteTask()
-            Action.DELETE_ALL -> {}
+            Action.DELETE_ALL -> deleteAllTask()
             Action.UNDO -> addTask()
             else -> {}
         }

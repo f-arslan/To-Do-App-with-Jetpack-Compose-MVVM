@@ -33,10 +33,12 @@ fun ListScreen(
     // todo: that's mean we don't need to use .value function
     val allTasks by sharedViewModel.allTasks.collectAsState()
 
+    val searchTasks by sharedViewModel.searchedTasks.collectAsState()
+
     // for (task in allTasks.value) {
-        // todo: if we don't have any task, this place not gonna trigger.
-        // todo: after we added item to database, that will automatically triggered
-        // Log.d("ListScreen", "Task: ${task.title}")
+    // todo: if we don't have any task, this place not gonna trigger.
+    // todo: after we added item to database, that will automatically triggered
+    // Log.d("ListScreen", "Task: ${task.title}")
     // }
 
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
@@ -65,7 +67,9 @@ fun ListScreen(
         },
         content = {
                   ListContent(
-                      tasks = allTasks,
+                      allTasks = allTasks,
+                      searchedTasks = searchTasks,
+                      searchAppBarState = searchAppBarState,
                       navigateToTaskScreen = navigateToTaskScreen,
                   )
         },
@@ -111,7 +115,7 @@ fun DisplaySnackBar(
         if (action != Action.NO_ACTION) {
             scope.launch {
                 val snackBarResult = scaffoldState.snackbarHostState.showSnackbar(
-                    message = "${action.name}: $taskTitle",
+                    message = setMessage(action, taskTitle),
                     actionLabel = setActionLabel(action)
                 )
                 undoDeletedTask(
@@ -121,6 +125,13 @@ fun DisplaySnackBar(
                 )
             }
         }
+    }
+}
+
+private fun setMessage(action: Action, taskTitle: String): String {
+    return when (action) {
+        Action.DELETE_ALL -> "All Tasks Removed."
+        else -> "${action.name}: $taskTitle"
     }
 }
 
