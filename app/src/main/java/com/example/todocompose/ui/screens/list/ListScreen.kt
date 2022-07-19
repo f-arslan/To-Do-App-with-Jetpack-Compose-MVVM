@@ -24,6 +24,7 @@ fun ListScreen(
         // Log.d("ListScreen", "LaunchedEffect Triggered")
         // todo: read docs about LaunchedEffect
         sharedViewModel.getAllTasks()
+        sharedViewModel.readSortState()
     }
 
     val action by sharedViewModel.action
@@ -40,6 +41,10 @@ fun ListScreen(
     // todo: after we added item to database, that will automatically triggered
     // Log.d("ListScreen", "Task: ${task.title}")
     // }
+
+    val sortState by sharedViewModel.sortState.collectAsState()
+    val lowPriorityTasks by sharedViewModel.lowPriorityTasks.collectAsState()
+    val highPriorityTasks by sharedViewModel.highPriorityTasks.collectAsState()
 
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
     val searchTextState: String by sharedViewModel.searchTextState
@@ -69,6 +74,9 @@ fun ListScreen(
                   ListContent(
                       allTasks = allTasks,
                       searchedTasks = searchTasks,
+                      lowPriorityTasks = lowPriorityTasks,
+                      highPriorityTasks = highPriorityTasks,
+                      sortState = sortState,
                       searchAppBarState = searchAppBarState,
                       navigateToTaskScreen = navigateToTaskScreen,
                   )
